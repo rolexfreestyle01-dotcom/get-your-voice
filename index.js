@@ -1,8 +1,7 @@
 const {
   Client,
   GatewayIntentBits,
-  ChannelType,
-  PermissionsBitField
+  ChannelType
 } = require("discord.js");
 
 const express = require("express");
@@ -25,7 +24,11 @@ const client = new Client({
   ]
 });
 
-const CREATE_CHANNEL_ID = process.env.CREATE_CHANNEL_ID;
+// ضع آيدي الغرفتين هنا
+const CREATE_CHANNEL_IDS = [
+  "1551544174921121902",
+  "1551544251190485103"
+];
 
 const temporaryChannels = new Set();
 
@@ -35,10 +38,10 @@ client.once("ready", () => {
 
 client.on("voiceStateUpdate", async (oldState, newState) => {
   try {
-    // عندما يدخل شخص إلى Get Your Voice
+    // إذا دخل العضو إحدى غرف Get Your Voice
     if (
-      newState.channelId === CREATE_CHANNEL_ID &&
-      oldState.channelId !== CREATE_CHANNEL_ID
+      CREATE_CHANNEL_IDS.includes(newState.channelId) &&
+      !CREATE_CHANNEL_IDS.includes(oldState.channelId)
     ) {
       const guild = newState.guild;
       const member = newState.member;
@@ -57,7 +60,7 @@ client.on("voiceStateUpdate", async (oldState, newState) => {
       console.log(`✅ Created room for ${member.user.tag}`);
     }
 
-    // حذف الغرفة عندما تصبح فارغة
+    // حذف الغرفة المؤقتة عندما تصبح فارغة
     if (
       oldState.channelId &&
       temporaryChannels.has(oldState.channelId) &&
@@ -72,5 +75,11 @@ client.on("voiceStateUpdate", async (oldState, newState) => {
         console.log(`🗑️ Deleted empty room`);
       }
     }
+
   } catch (error) {
-    console
+    console.error("❌ Error:", error);
+  }
+});
+
+// ضع توكن البوت في Environment Variables باسم TOKEN
+client.login(process.env.TOKEN);
