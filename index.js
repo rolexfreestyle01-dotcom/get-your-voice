@@ -83,3 +83,4 @@ client.on("voiceStateUpdate", async (oldState, newState) => {
 
 // ضع توكن البوت في Environment Variables باسم TOKEN
 client.login(process.env.TOKEN);
+client.login(process.env.MTU1MDQ5ODIxMjUzMDM2MDQwMA.Gtj6eP.RDnuRiNLnSAsGVUeIccKTNw-7uJf2zghIwWyU8);
